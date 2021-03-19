@@ -1,5 +1,5 @@
 import '../_mockLocation';
-import React, { useContext  } from 'react';
+import React, { useContext, useCallback  } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements';
 import { SafeAreaView, withNavigationFocus } from 'react-navigation';
@@ -7,13 +7,23 @@ import { SafeAreaView, withNavigationFocus } from 'react-navigation';
 import Map from '../components/Map';
 import { Context as LocationContext } from '../context/LocationContext';
 import useLocation from '../hooks/useLocation';
+import TrackForm from '../components/TrackForm';
 
 const TrackCreateScreen = ({ isFocused }) => {
-  const { addLocation } = useContext(LocationContext);
+  const { state: { recording }, addLocation } = useContext(LocationContext);
   // same below: const [err] = useLocation((location) => addLocation(location));
-  const [err] = useLocation(isFocused, addLocation);
+  const callback = useCallback(
+    location => {
+      addLocation(location, recording);
+    },
+    [recording]
+  );
+  // const [err] = useLocation(isFocused, (location) => {
+  //   addLocation(location, state.recording);
+  // });
+  const [err] = useLocation(isFocused || recording, callback);
 
-  console.log(isFocused);
+  // console.log(isFocused);
   // const [err, setErr] = useState(null);
 
   // const startWatching = async () => {
@@ -45,6 +55,7 @@ const TrackCreateScreen = ({ isFocused }) => {
       <Map />
       {/*<NavigationEvents onWillFocus={() => console.log('LEAVING')} />*/}
       {err ? <Text>Please enable location sercices</Text> : null}
+      <TrackForm />
     </SafeAreaView>
   )
 };
