@@ -18,7 +18,8 @@ app.use(trackRoutes);
 const mongoUri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.oanhc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useUnifiedTopology: true
 });
 mongoose.connection.on('connected', () => {
   console.log('Connected to mongo instance');
